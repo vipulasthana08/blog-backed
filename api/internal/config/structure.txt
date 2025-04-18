@@ -1,0 +1,19 @@
+.
+├── api                      # restful api service
+│   ├── main.go              # the main go file
+│   └── internal
+│       ├── config           # conf definition
+│       │   └── structure.txt
+│       ├── handler          # restful api handlers
+│       │   ├── addhandler.go
+│       │   ├── checkhandler.go
+│       │   └── routes.go
+│       ├── logic            # biz logic
+│       │   ├── addlogic.go
+│       │   └── checklogic.go
+│       ├── service          # service context definition to pass from main
+│       │   └── servicecontext.go
+│       └── utils            # request and response types
+│           └── utils.go
+├── go.mod
+└── go.sum
