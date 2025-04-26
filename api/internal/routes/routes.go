@@ -13,10 +13,10 @@ func RegisterRoutes() {
 	http.HandleFunc("/home", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello"))
 	})
-	http.HandleFunc("/new", blogcontroller.CreateNewBlog)
-	http.HandleFunc("/check", blogcontroller.CheckBlogExist)
-	http.HandleFunc("/get", blogcontroller.GetBlog)
-	http.HandleFunc("/delete", blogcontroller.DeleteBlog)
+	http.Handle("/new", corsMiddleware(http.HandlerFunc(blogcontroller.CreateNewBlog)))
+	http.Handle("/check", corsMiddleware(http.HandlerFunc(blogcontroller.CheckBlogExist)))
+	http.Handle("/get", corsMiddleware(http.HandlerFunc(blogcontroller.GetBlog)))
+	http.Handle("/delete", corsMiddleware(http.HandlerFunc(blogcontroller.DeleteBlog)))
 
 	log.Println("Server started on port 8080")
 
@@ -24,4 +24,19 @@ func RegisterRoutes() {
 	if err != nil {
 		log.Fatal("Error starting server: ", err)
 	}
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
